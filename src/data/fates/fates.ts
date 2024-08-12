@@ -1,7 +1,8 @@
 import { Card } from "../cards";
 import { ValueOf } from "../types";
+import { steward } from "./steward";
 
-export const FATE_IDS = {
+export const fateIds = {
   steward: "F1",
   founder: "F2",
   magnate: "F3",
@@ -28,7 +29,7 @@ export const FATE_IDS = {
   judge: "F24",
 } as const;
 
-export type FateId = ValueOf<typeof FATE_IDS>;
+export type FateId = ValueOf<typeof fateIds>;
 
 type FateAct = "A" | "B" | "C";
 
@@ -44,3 +45,5 @@ export type Fate = {
   cards: Array<Card>;
   tokens?: Array<Token>;
 };
+
+export const fateCards = [...steward.cards];

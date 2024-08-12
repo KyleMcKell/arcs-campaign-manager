@@ -1,18 +1,19 @@
-import { FateId } from "./fates/fates";
+import { fateCards, FateId } from "./fates/fates";
+import { steward } from "./fates/steward";
 import { ValueOf } from "./types";
 
-const DECK_IDS = {
+export const deckIds = {
   campaignCourt: "CC",
   lore: "L",
   starting: "Starting",
   action: "Action",
 } as const;
 
-type NonFateDeckIds = ValueOf<typeof DECK_IDS>;
+type NonFateDeckIds = ValueOf<typeof deckIds>;
 
 type DeckId = NonFateDeckIds | FateId;
 
-export const CARD_TYPES = {
+export const cardTypes = {
   lore: "Lore",
   guild: "Guild",
   vox: "Vox",
@@ -25,11 +26,12 @@ export const CARD_TYPES = {
   ability: "Ability",
   action: "Action",
   setup: "Setup",
+  reminder: "Reminder",
 } as const;
 
-type CardTypes = ValueOf<typeof CARD_TYPES>;
+type CardTypes = ValueOf<typeof cardTypes>;
 
-export const RESOURCES = {
+export const resources = {
   material: "Material",
   fuel: "Fuel",
   weapon: "Weapon",
@@ -37,7 +39,9 @@ export const RESOURCES = {
   psionic: "Psionic",
 } as const;
 
-const SUITS = {
+export type Resource = ValueOf<typeof resources>;
+
+const suits = {
   mobilization: "Mobilization",
   construction: "Construction",
   aggression: "Aggression",
@@ -46,9 +50,9 @@ const SUITS = {
   event: "Event",
 };
 
-export type Suit = ValueOf<typeof SUITS>;
+export type Suit = ValueOf<typeof suits>;
 
-type StandardCard = {
+export type StandardCard = {
   cardId: number;
   deckId: Exclude<DeckId, "Action">;
   name: string;
@@ -61,14 +65,18 @@ export type ActionCard = {
   deckId: Extract<"Action", DeckId>;
   suit: Suit;
   value: number;
-  fourPlayerOnly?: boolean;
+  fourPlayerOnly: boolean;
 };
 
-type SetupCard = {
-  cardType: Extract<"Setup", CardTypes>;
+export type SetupCard = {
+  cardType: Extract<"Setup" | "Resolution", CardTypes>;
   cardId: number;
   deckId: FateId;
   act: 1 | 2 | 3;
+};
+
+export type RuleCard = StandardCard & {
+  cardType: Extract<"Law" | "Edict" | "Summit", CardTypes>;
 };
 
 export type Card =
@@ -76,7 +84,7 @@ export type Card =
       (
         | {
             cardType: Extract<"Guild", CardTypes>;
-            resource: ValueOf<typeof RESOURCES>;
+            resource: ValueOf<typeof resources>;
           }
         | {
             cardType: Extract<"Edict", CardTypes>;
@@ -86,611 +94,659 @@ export type Card =
         | {
             cardType: Exclude<
               CardTypes,
-              "Guild" | "Edict" | "Action" | "Setup"
+              | "Guild"
+              | "Edict"
+              | "Action"
+              | "Setup"
+              | "Resolution"
+              | "Law"
+              | "Edict"
+              | "Summit"
             >;
           }
       ))
   | ActionCard
-  | SetupCard;
+  | SetupCard
+  | RuleCard;
 
-const actionCards: Card[] = [
+export const actionCards: ActionCard[] = [
+  {
+    cardId: "event1",
+    suit: suits.event,
+    value: 0,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
+    fourPlayerOnly: false,
+  },
+  {
+    cardId: "event2",
+    suit: suits.event,
+    value: 0,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
+    fourPlayerOnly: false,
+  },
+  {
+    cardId: "event3",
+    suit: suits.event,
+    value: 0,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
+    fourPlayerOnly: true,
+  },
   {
     cardId: "aggro1",
-    suit: SUITS.aggression,
+    suit: suits.aggression,
     value: 1,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: true,
   },
   {
     cardId: "aggro2",
-    suit: SUITS.aggression,
+    suit: suits.aggression,
     value: 2,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "aggro3",
-    suit: SUITS.aggression,
+    suit: suits.aggression,
     value: 3,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "aggro4",
-    suit: SUITS.aggression,
+    suit: suits.aggression,
     value: 4,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "aggro5",
-    suit: SUITS.aggression,
+    suit: suits.aggression,
     value: 5,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "aggro6",
-    suit: SUITS.aggression,
+    suit: suits.aggression,
     value: 6,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "aggro7",
-    suit: SUITS.aggression,
+    suit: suits.aggression,
     value: 7,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: true,
   },
   {
     cardId: "admin1",
-    suit: SUITS.administration,
+    suit: suits.administration,
     value: 1,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: true,
   },
   {
     cardId: "admin2",
-    suit: SUITS.administration,
+    suit: suits.administration,
     value: 2,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "admin3",
-    suit: SUITS.administration,
+    suit: suits.administration,
     value: 3,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "admin4",
-    suit: SUITS.administration,
+    suit: suits.administration,
     value: 4,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "admin5",
-    suit: SUITS.administration,
+    suit: suits.administration,
     value: 5,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "admin6",
-    suit: SUITS.administration,
+    suit: suits.administration,
     value: 6,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "admin7",
-    suit: SUITS.administration,
+    suit: suits.administration,
     value: 7,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: true,
   },
   {
     cardId: "const1",
-    suit: SUITS.construction,
+    suit: suits.construction,
     value: 1,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: true,
   },
   {
     cardId: "const2",
-    suit: SUITS.construction,
+    suit: suits.construction,
     value: 2,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "const3",
-    suit: SUITS.construction,
+    suit: suits.construction,
     value: 3,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "const4",
-    suit: SUITS.construction,
+    suit: suits.construction,
     value: 4,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "const5",
-    suit: SUITS.construction,
+    suit: suits.construction,
     value: 5,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "const6",
-    suit: SUITS.construction,
+    suit: suits.construction,
     value: 6,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "const7",
-    suit: SUITS.construction,
+    suit: suits.construction,
     value: 7,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: true,
   },
   {
     cardId: "mobil1",
-    suit: SUITS.mobilization,
+    suit: suits.mobilization,
     value: 1,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: true,
   },
   {
     cardId: "mobil2",
-    suit: SUITS.mobilization,
+    suit: suits.mobilization,
     value: 2,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "mobil3",
-    suit: SUITS.mobilization,
+    suit: suits.mobilization,
     value: 3,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "mobil4",
-    suit: SUITS.mobilization,
+    suit: suits.mobilization,
     value: 4,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "mobil5",
-    suit: SUITS.mobilization,
+    suit: suits.mobilization,
     value: 5,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "mobil6",
-    suit: SUITS.mobilization,
+    suit: suits.mobilization,
     value: 6,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: false,
   },
   {
     cardId: "mobil7",
-    suit: SUITS.mobilization,
+    suit: suits.mobilization,
     value: 7,
-    deckId: DECK_IDS.action,
-    cardType: CARD_TYPES.action,
+    deckId: deckIds.action,
+    cardType: cardTypes.action,
     fourPlayerOnly: true,
   },
 ];
 
 const startingCards: Card[] = [
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 1,
-    cardType: CARD_TYPES.imperialCouncil,
+    cardType: cardTypes.imperialCouncil,
     name: "Imperial Council in Session",
     altName: "Imperil Council Decided",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 2,
-    cardType: CARD_TYPES.edict,
+    cardType: cardTypes.edict,
     name: "Guild Envoys Depart",
     placement: 0,
     twoPlayerOnly: true,
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 3,
-    cardType: CARD_TYPES.edict,
+    cardType: cardTypes.edict,
     name: "Govern the Imperial Reach",
     placement: 3,
     altName: "A Policy of War",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 4,
-    cardType: CARD_TYPES.edict,
+    cardType: cardTypes.edict,
     name: "Govern the Imperial Reach",
     placement: 3,
     altName: "A Policy of Peace",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 5,
-    cardType: CARD_TYPES.edict,
+    cardType: cardTypes.edict,
     name: "Govern the Imperial Reach",
     placement: 3,
     altName: "A Policy of Escalation",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 6,
-    cardType: CARD_TYPES.title,
+    cardType: cardTypes.title,
     name: "Imperial Regent",
     altName: "Outlaw",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 7,
-    cardType: CARD_TYPES.title,
+    cardType: cardTypes.title,
     name: "Imperial Regent",
     altName: "Outlaw",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 8,
-    cardType: CARD_TYPES.title,
+    cardType: cardTypes.title,
     name: "Imperial Regent",
     altName: "Outlaw",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 9,
-    cardType: CARD_TYPES.title,
+    cardType: cardTypes.title,
     name: "Imperial Regent",
     altName: "Outlaw",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 10,
-    cardType: CARD_TYPES.ability,
+    cardType: cardTypes.ability,
     name: "Flagship Upgrades",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 11,
-    cardType: CARD_TYPES.ability,
+    cardType: cardTypes.ability,
     name: "Flagship Upgrades",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 11,
-    cardType: CARD_TYPES.ability,
+    cardType: cardTypes.ability,
     name: "Flagship Upgrades",
   },
   {
-    deckId: DECK_IDS.starting,
+    deckId: deckIds.starting,
     cardId: 11,
-    cardType: CARD_TYPES.ability,
+    cardType: cardTypes.ability,
     name: "Flagship Upgrades",
   },
 ];
 
 const campaignCourtCards: Card[] = [
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 1,
     name: "Mining Interest",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.material,
+    cardType: cardTypes.guild,
+    resource: resources.material,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 2,
     name: "Construction Union",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.material,
+    cardType: cardTypes.guild,
+    resource: resources.material,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 3,
     name: "Gatekeepers",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.fuel,
+    cardType: cardTypes.guild,
+    resource: resources.fuel,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 4,
     name: "Shipping Interest",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.fuel,
+    cardType: cardTypes.guild,
+    resource: resources.fuel,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 5,
     name: "Skirmishers",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.weapon,
+    cardType: cardTypes.guild,
+    resource: resources.weapon,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 6,
     name: "Arms Union",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.weapon,
+    cardType: cardTypes.guild,
+    resource: resources.weapon,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 7,
     name: "Lattice Spies",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.psionic,
+    cardType: cardTypes.guild,
+    resource: resources.psionic,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 8,
     name: "Silver-Tongues",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.psionic,
+    cardType: cardTypes.guild,
+    resource: resources.psionic,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 9,
     name: "Sworn Guardians",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.relic,
+    cardType: cardTypes.guild,
+    resource: resources.relic,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 10,
     name: "Elder Broker",
-    cardType: CARD_TYPES.guild,
-    resource: RESOURCES.relic,
+    cardType: cardTypes.guild,
+    resource: resources.relic,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 11,
     name: "Populist Demands",
-    cardType: CARD_TYPES.vox,
+    cardType: cardTypes.vox,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 12,
     name: "Council Intrigue",
-    cardType: CARD_TYPES.vox,
+    cardType: cardTypes.vox,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 13,
     name: "Diplomatic Fiasco",
-    cardType: CARD_TYPES.vox,
+    cardType: cardTypes.vox,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 14,
     name: "Song of Freedom",
-    cardType: CARD_TYPES.vox,
+    cardType: cardTypes.vox,
   },
   {
-    deckId: DECK_IDS.campaignCourt,
+    deckId: deckIds.campaignCourt,
     cardId: 15,
     name: "Blight Looms",
-    cardType: CARD_TYPES.vox,
+    cardType: cardTypes.vox,
   },
 ];
 
 const loreCards: Card[] = [
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 1,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Tool-Priests",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 2,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Galactic Rifles",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 3,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Sprinter Drives",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 4,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Mirror Plating",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 5,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Hidden Harbors",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 6,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Signal Breaker",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 7,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Repair Drones",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 8,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Gate Ports",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 9,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Cloud Cities",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 10,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Living Structures",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 11,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Gate Stations",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 12,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Railgun Arrays",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 13,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Ancient Holdings",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 14,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Seeker Torpedoes",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 15,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Predictive Sensors",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 16,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Force Beams",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 17,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Raider Exosuits",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 18,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Survival Overrides",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 19,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Empath's Vision",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 20,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Empath's Bond",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 21,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Keeper's Trust",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 22,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Keeper's Solidarity",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 23,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Warlord's Cruelty",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 24,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Warlord's Terror",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 25,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Tyrant's Ego",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 26,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Tyrant's Authority",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 27,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Tycoon's Ambition",
   },
   {
-    cardType: CARD_TYPES.lore,
+    cardType: cardTypes.lore,
     cardId: 28,
-    deckId: DECK_IDS.lore,
+    deckId: deckIds.lore,
     name: "Tycoon's Charm",
   },
 ];
 
-const cards = [
-  ...startingCards,
+const cardsArray: Array<Card> = [
   ...campaignCourtCards,
   ...actionCards,
   ...loreCards,
+  ...startingCards,
+  ...fateCards,
 ];
+
+type CardMap = {
+  [key: string]: Card;
+};
+
+export const cards: CardMap = cardsArray.reduce((acc, card) => {
+  const key = `${card.deckId}_${card.cardId}`;
+  acc[key] = card;
+  return acc;
+}, {} as CardMap);
+
+export const getCard = (deckId: DeckId, cardId: number): Card | undefined => {
+  const key = `${deckId}_${cardId}`;
+  return cards[key];
+};

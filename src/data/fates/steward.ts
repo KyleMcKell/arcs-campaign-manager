@@ -1,28 +1,80 @@
-import { CARD_TYPES, RESOURCES } from "../cards";
-import { Fate, FATE_IDS } from "./fates";
+import { cardTypes, resources } from "../cards";
+import { Fate, fateIds } from "./fates";
 
 export const steward: Fate = {
-  id: "F1",
+  id: fateIds.steward,
   fateAct: "A",
   cards: [
     {
-      cardType: CARD_TYPES.setup,
+      cardType: cardTypes.setup,
       act: 1,
       cardId: 1,
-      deckId: FATE_IDS.steward,
+      deckId: fateIds.steward,
     },
     {
-      cardType: CARD_TYPES.lore,
+      cardType: cardTypes.lore,
       cardId: 2,
-      deckId: FATE_IDS.steward,
+      deckId: fateIds.steward,
       name: "Imperial Authority",
     },
     {
-      cardType: CARD_TYPES.guild,
+      cardType: cardTypes.guild,
       cardId: 3,
-      deckId: FATE_IDS.steward,
+      deckId: fateIds.steward,
       name: "Dealmakers",
-      resource: RESOURCES.psionic,
+      resource: resources.psionic,
+    },
+    {
+      cardType: cardTypes.resolution,
+      act: 1,
+      cardId: 4,
+      deckId: fateIds.steward,
+    },
+    {
+      cardType: cardTypes.vox,
+      cardId: 5,
+      deckId: fateIds.steward,
+      name: "Council Intrigue",
+    },
+    {
+      cardType: cardTypes.guild,
+      cardId: 6,
+      deckId: fateIds.steward,
+      name: "Tax Collectors",
+      resource: resources.relic,
+    },
+    {
+      cardType: cardTypes.guild,
+      cardId: 7,
+      deckId: fateIds.steward,
+      name: "Hunter Squads",
+      resource: resources.weapon,
+    },
+    {
+      cardType: cardTypes.law,
+      cardId: 8,
+      deckId: fateIds.steward,
+      name: "Imperial Protectors",
+    },
+    {
+      cardId: 9,
+      cardType: cardTypes.vox,
+      deckId: fateIds.steward,
+      name: "Empire Falls",
+    },
+    {
+      cardId: 10,
+      cardType: cardTypes.guild,
+      deckId: fateIds.steward,
+      name: "Lesser Regent",
+      resource: resources.psionic,
+    },
+    {
+      cardId: 11,
+      cardType: cardTypes.guild,
+      deckId: fateIds.steward,
+      name: "Lesser Regent",
+      resource: resources.psionic,
     },
   ],
   tokens: [
