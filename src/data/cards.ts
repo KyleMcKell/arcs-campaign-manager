@@ -5,7 +5,7 @@ import { ValueOf } from "./types";
 export const deckIds = {
   campaignCourt: "CC",
   lore: "L",
-  starting: "Starting",
+  starting: "AID",
   action: "Action",
 } as const;
 
